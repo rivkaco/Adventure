@@ -15,8 +15,9 @@ def start():
     username = request.POST.get("name")
     current_adv_id = request.POST.get("adventure_id")
     user_id = adventure.find_user_id(username)
-    current_story_id = adventure.load_story(user_id, current_adv_id)
-    next_steps_results = [
+    current_story_id = adventure.load_story(user_id, current_adv_id)#need to write this function
+    next_steps_results = [#SELECT id, answer_text FROM options WHERE q_id = 1...this returns an array of dictionaries...
+        #We will have to change the 'option_text' in the js to 'answer_text', or change the answer_text column to option_text.
         {"id": 1, "option_text": "I fight it"},
         {"id": 2, "option_text": "I give him 10 coins"},
         {"id": 3, "option_text": "I tell it that I just want to go home"},
