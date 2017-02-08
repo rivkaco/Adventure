@@ -1,15 +1,8 @@
 from bottle import route, run, template, static_file, request
 import random
 import json
-import pymysql
-
-connection = pymysql.connect(host = 'sql6.freesqldatabase.com',
-                             port = '3306',
-                             user = 'sql6157858',
-                             password = 'btRTYSfVyQ',
-                             db = 'sql6157858',
-                             charset = 'utf8',
-                             cursorclass = pymysql.cursors.DictCursor)
+#This is importing our file with our MySQL queries/modifications.
+import adventure_mysql as adventure
 
 
 @route("/", method="GET")
@@ -21,10 +14,8 @@ def index():
 def start():
     username = request.POST.get("name")
     current_adv_id = request.POST.get("adventure_id")
-
-
-    user_id = 0 #todo check if exists and if not create it
-    current_story_id = 0 #todo change
+    user_id = adventure.find_user_id(username)
+    current_story_id = adventure.load_story(user_id, current_adv_id)
     next_steps_results = [
         {"id": 1, "option_text": "I fight it"},
         {"id": 2, "option_text": "I give him 10 coins"},
@@ -53,7 +44,7 @@ def story():
         {"id": 3, "option_text": "I sleep!"},
         {"id": 4, "option_text": "I fight!"}
         ]
-    random.shuffle(next_steps_results) #todo change - used only for demonstration purposes
+    random.shuffle(next_steps_results) #todo change - used only for demonstration purpouses
 
     #todo add the next step based on db
     return json.dumps({"user": user_id,
