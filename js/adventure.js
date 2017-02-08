@@ -29,6 +29,7 @@ Adventures.bindErrorHandlers = function () {
 //The core function of the app, sends the user's choice and then parses the results to the server and handling the response
 Adventures.chooseOption = function(){
     Adventures.currentStep = $(this).val();
+    alert(Adventures.currentStep)
     $.ajax("/story",{
         type: "POST",
         data: {"user": Adventures.currentUser,
@@ -50,6 +51,8 @@ Adventures.write = function (message) {
     for(var i=0;i<message['options'].length;i++){
         var opt = $("#option_" + (i+1));
         opt.text(message['options'][i]['option_text']);
+
+        // add value property= next step
         opt.prop("value", message['options'][i]['id']);
     }
     Adventures.setImage(message["image"]);

@@ -1,6 +1,15 @@
 from bottle import route, run, template, static_file, request
 import random
 import json
+import pymysql
+
+connection = pymysql.connect(host = 'sql6.freesqldatabase.com',
+                             port = '3306',
+                             user = 'sql6157858',
+                             password = 'btRTYSfVyQ',
+                             db = 'sql6157858',
+                             charset = 'utf8',
+                             cursorclass = pymysql.cursors.DictCursor)
 
 
 @route("/", method="GET")
@@ -44,7 +53,7 @@ def story():
         {"id": 3, "option_text": "I sleep!"},
         {"id": 4, "option_text": "I fight!"}
         ]
-    random.shuffle(next_steps_results) #todo change - used only for demonstration purpouses
+    random.shuffle(next_steps_results) #todo change - used only for demonstration purposes
 
     #todo add the next step based on db
     return json.dumps({"user": user_id,
