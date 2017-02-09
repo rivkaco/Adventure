@@ -15,16 +15,17 @@ def start():
     username = request.POST.get("user")
     current_adv_id = request.POST.get("adventure_id")
     user_id = adventure.find_user_id(username)
-    current_story_id = adventure.load_story(user_id, current_adv_id)#need to write this function returns the step in the current adventure that the user is on, whe
+    current_story_id = adventure.load_story(user_id, current_adv_id)
+    question = adventure.get_question(current_adv_id,current_story_id)
+    image = question['picture_name']+'.jpg'
+    current_story_id = adventure.load_story(user_id, current_adv_id)
     next_steps_results = adventure.get_options(current_adv_id, current_story_id)
 
-
-    #todo add the next step based on db
     return json.dumps({"user": user_id,
                        "adventure": current_adv_id,
                        "current": current_story_id,
-                       "text": "You meet a mysterious creature in the woods, what do you do?",
-                       "image": "troll.png",
+                       "text": question['question_text'],
+                       "image": image,
                        "options": next_steps_results
                        })
 

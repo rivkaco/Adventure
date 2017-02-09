@@ -61,3 +61,11 @@ def get_options (adventure_id, step_id):
         cursor.execute(sql)
         result = cursor.fetchall()
         return result
+
+def get_question(current_adv_id,current_story_id):
+    with connection.cursor() as cursor:
+        sql = "SELECT question_text,picture_name FROM scenes WHERE story_id={0} and q_id={1}".format(current_adv_id,current_story_id)
+        cursor.execute(sql)
+        result = cursor.fetchone()
+        return result
+
