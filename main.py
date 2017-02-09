@@ -12,17 +12,12 @@ def index():
 
 @route("/start", method="POST")
 def start():
-    username = request.POST.get("name")
+    username = request.POST.get("user")
     current_adv_id = request.POST.get("adventure_id")
     user_id = adventure.find_user_id(username)
-    current_story_id = adventure.load_story(user_id, current_adv_id)#need to write this function
-    next_steps_results = [#SELECT id, answer_text FROM options WHERE q_id = 1...this returns an array of dictionaries...
-        #We will have to change the 'option_text' in the js to 'answer_text', or change the answer_text column to option_text.
-        {"id": 1, "option_text": "I fight it"},
-        {"id": 2, "option_text": "I give him 10 coins"},
-        {"id": 3, "option_text": "I tell it that I just want to go home"},
-        {"id": 4, "option_text": "I run away quickly"}
-        ]
+    current_story_id = adventure.load_story(user_id, current_adv_id)#need to write this function returns the step in the current adventure that the user is on, whe
+    next_steps_results = adventure.get_options(current_adv_id, current_story_id)
+
 
     #todo add the next step based on db
     return json.dumps({"user": user_id,

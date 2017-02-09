@@ -54,3 +54,10 @@ def get_step(user_id,adventure_id):
         cursor.execute(sql)
         result = cursor.fetchone()
         return result['step']
+
+def get_options (adventure_id, step_id):
+    with connection.cursor() as cursor:
+        sql = "select id, option_text from options WHERE story_id = {0} AND q_id = {1}".format(adventure_id, step_id)
+        cursor.execute(sql)
+        result = cursor.fetchall()
+        return result
