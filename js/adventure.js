@@ -51,7 +51,7 @@ Adventures.write = function (message) {
         opt.text(message['options'][i]['option_text']);
 
         // add value property= next step
-        opt.prop("value", message['options'][i]['id']);
+        opt.prop("value", message['options'][i]['next_question']);
     }
     Adventures.setImage(message["image"]);
 };

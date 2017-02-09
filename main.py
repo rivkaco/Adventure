@@ -34,18 +34,18 @@ def start():
 def story():
     user_id = request.POST.get("user")
     current_adv_id = request.POST.get("adventure")
-    next_story_id = request.POST.get("next") #this is what the user chose - use it!
-
-    next_steps_results =2
+    next_story_id = request.POST.get("next")
+    question = adventure.get_question(current_adv_id,next_story_id)
+    image = question['picture_name']+'.jpg'
+    next_steps_results = adventure.get_options(current_adv_id, next_story_id)
 
     #todo add the next step based on db
     return json.dumps({"user": user_id,
                        "adventure": current_adv_id,
-                       "text": "New scenario! What would you do?",
-                       "image": "choice.jpg",
+                       "text": question['question_text'],
+                       "image": image,
                        "options": next_steps_results
                        })
-
 @route('/js/<filename:re:.*\.js$>', method='GET')
 def javascripts(filename):
     return static_file(filename, root='js')
