@@ -23,6 +23,7 @@ def create_user(username):
     with connection.cursor() as cursor:
         sql = "INSERT INTO users (username) VALUE('{}')".format(username)
         cursor.execute(sql)
+        connection.commit()
 
 def fetch_user_id(username):
     with connection.cursor() as cursor:
@@ -31,5 +32,25 @@ def fetch_user_id(username):
         result = cursor.fetchone()
         return result['id']
 
-# def load_story(user_id,adventure_id):
 
+def load_story(user_id,adventure_id):
+    with connection.cursor() as cursor:
+        sql ="SELECT user_id FROM adventures WHERE user_id={}".format(user_id)
+        cursor.execute(sql)
+        result = cursor.fetchone()
+        if result is None:
+            add_user_adventure(user_id,adventure_id)
+        return get_step(user_id,adventure_id)
+
+def add_user_adventure(user_id,adventure_id):
+    with connection.cursor() as cursor:
+        sql ="INSERT INTO adventures (user_id,adventure) VALUES({0},{1})".format(user_id,adventure_id)
+        cursor.execute(sql)
+        connection.commit()
+
+def get_step(user_id,adventure_id):
+    with connection.cursor() as cursor:
+        sql = "SELECT step FROM adventures WHERE user_id={0} AND adventure ={1}".format(user_id,adventure_id)
+        cursor.execute(sql)
+        result = cursor.fetchone()
+        return result['step']
