@@ -35,13 +35,8 @@ def story():
     user_id = request.POST.get("user")
     current_adv_id = request.POST.get("adventure")
     next_story_id = request.POST.get("next") #this is what the user chose - use it!
-    next_steps_results = [
-        {"id": 1, "option_text": "I run!"},
-        {"id": 2, "option_text": "I hide!"},
-        {"id": 3, "option_text": "I sleep!"},
-        {"id": 4, "option_text": "I fight!"}
-        ]
-    random.shuffle(next_steps_results) #todo change - used only for demonstration purpouses
+
+    next_steps_results =2
 
     #todo add the next step based on db
     return json.dumps({"user": user_id,

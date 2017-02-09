@@ -57,7 +57,7 @@ def get_step(user_id,adventure_id):
 
 def get_options (adventure_id, step_id):
     with connection.cursor() as cursor:
-        sql = "select id, option_text from options WHERE story_id = {0} AND q_id = {1}".format(adventure_id, step_id)
+        sql = "select next_question, option_text from options WHERE story_id = {0} AND q_id = {1}".format(adventure_id, step_id)
         cursor.execute(sql)
         result = cursor.fetchall()
         return result
@@ -69,3 +69,4 @@ def get_question(current_adv_id,current_story_id):
         result = cursor.fetchone()
         return result
 
+print(get_options(1,2))

@@ -1,9 +1,8 @@
 var Adventures = {};
-//currentAdventure is used for the adventure we're currently on (id). This should be determined at the beginning of the program
 Adventures.currentAdventure = 0; //todo keep track from db
-//currentStep is used for the step we're currently on (id). This should be determined at every crossroad, depending on what the user chose
 Adventures.currentStep = 0;//todo keep track from db
 Adventures.currentUser = 0;//todo keep track from db
+Adventures.nextStep = 0
 
 
 //TODO: remove for production
@@ -28,17 +27,16 @@ Adventures.bindErrorHandlers = function () {
 
 //The core function of the app, sends the user's choice and then parses the results to the server and handling the response
 Adventures.chooseOption = function(){
-    Adventures.currentStep = $(this).val();
-    alert(Adventures.currentStep)
+    Adventures.nextStep = $(this).val();
     $.ajax("/story",{
         type: "POST",
         data: {"user": Adventures.currentUser,
             "adventure": Adventures.currentAdventure,
-            "next": Adventures.currentStep},
+            "next": Adventures.nextStep},
         dataType: "json",
         contentType: "application/json",
         success: function (data) {
-            console.log(data);
+            Adventures.currentStep = data['current']
             $(".greeting-text").hide();
             Adventures.write(data);
         }
@@ -95,6 +93,9 @@ Adventures.initAdventure = function(){
         dataType: "json",
         contentType: "application/json",
         success: function (data) {
+            Adventures.currentUser = data['user']
+            Adventures.currentStep = data['current']
+            Adventures.currentAdventure = data['adventure']
             console.log(data);
             Adventures.write(data);
             $(".adventure").show();
