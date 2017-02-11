@@ -26,7 +26,7 @@
 
                 </div>
             </div>
-            <!-- basice image-->
+            <!-- basic image-->
             <h2 class="name-text">What is your name?</h2>
             <div class="form-group">
                 <div class="col-sm-12">
@@ -57,7 +57,7 @@
             </div>
             <!-- basic image-->
             <div class="situation-text-holder">
-                <img id="situation-image" class="situation-image img-responsive" src="">
+                <img id="situation-image" style="max-height:300px" class="situation-image img-responsive" src="">
                 <h2 class="situation-text"></h2>
                 <div class="container">
                     <div class="row">
@@ -85,23 +85,25 @@
                         value=""></button>
                 <button type="button" class="btn btn-primary btn-lg btn-block game-option" id="option_4"
                         value=""></button>
+                <button type="button" class="btn btn-success btn-lg save-game">Save Game</button>
+                <button type="button" class="btn btn-success btn-lg restart">Restart</button>
             </div>
 
             <div class="restart-list">
-                <button type="button" class="btn btn-primary btn-lg btn-block" id="new-game"
+                <button type="button" class="btn btn-primary btn-lg btn-block new-game"
                         >Start Menu</button>
-                <button type="button" class="btn btn-primary btn-lg btn-block" id="restart"
+                <button type="button" class="btn btn-primary btn-lg btn-block restart"
                         >Restart</button>
             </div>
         </div>
 
     </div>
-
-
     <div class="col-md-3"><br/></div>
     <div class="row">
         <div class="copyright">Copyright © 2014-2016 Israel Tech Challenge, All Rights Reserved.</div>
     </div>
 </div>
+<img style="position:fixed; top:45%; left:45%" src="images/loading.gif" id="loading-gif">
+
 </body>
 </html>

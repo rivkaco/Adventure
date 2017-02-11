@@ -50,6 +50,23 @@ def story():
                        })
 
 
+@route("/save", method="POST")
+def save():
+    user_id= request.POST.get("user")
+    current_adv_id = request.POST.get("adventure")
+    current_step = request.POST.get("current")
+    health = request.POST.get("health")
+    coins = request.POST.get("coins")
+    adventure.save_game(user_id,current_adv_id,current_step,health,coins)
+    return json.dumps({'success':'Game Saved'})
+
+@route("/reset", method="POST")
+def reset():
+    user_id = request.POST.get("user")
+    current_adv_id = request.POST.get("adventure")
+    adventure.reset_game(user_id,current_adv_id)
+    return
+
 @route('/js/<filename:re:.*\.js$>', method='GET')
 def javascripts(filename):
     return static_file(filename, root='js')

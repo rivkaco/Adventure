@@ -1,7 +1,7 @@
 var Adventures = {};
-Adventures.currentAdventure //todo keep track from db
-Adventures.currentStep;//todo keep track from db
-Adventures.currentUser;//todo keep track from db
+Adventures.currentAdventure;
+Adventures.currentStep;
+Adventures.currentUser;
 Adventures.nextStep;
 Adventures.playerHealth;
 Adventures.playerCoins;
@@ -30,6 +30,7 @@ Adventures.bindErrorHandlers = function () {
 //The core function of the app, sends the user's choice and then parses the results to the server and handling the response.
 Adventures.chooseOption = function(){
     Adventures.nextStep = $(this).val();
+    Adventures.currentStep=$(this).val();
     Adventures.playerHealth+=$(this).data('h-e')
     Adventures.playerCoins+=$(this).data('c-e')
 
@@ -43,7 +44,6 @@ Adventures.chooseOption = function(){
         dataType: "json",
         contentType: "application/json",
         success: function (data) {
-            Adventures.currentStep = data['current']
             $(".greeting-text").hide();
             Adventures.write(data);
         }
@@ -85,18 +85,23 @@ Adventures.playerDied = function(){
 
 Adventures.start = function(){
     $(document).ready(function () {
+        $("#loading-gif").hide();
         $(".adventure").hide();
         $(".welcome-screen").show();
         Adventures.bindEventHandlers();
+
     });
 };
 
 Adventures.bindEventHandlers = function(){
-    $("#new-game").off('click').on('click',Adventures.start)
+    $(".new-game").off('click').on('click',Adventures.start)
+    $(".restart").off('click').on('click',Adventures.restartGame),
     $("#nameField").unbind().keyup(Adventures.checkName);
     $(".game-option").off('click').on('click',Adventures.chooseOption);
     $(".adventure-button").off('click').on('click',Adventures.initAdventure);
+    $(".save-game").off('click').on('click',Adventures.saveGame);
 }
+
 
 //Setting the relevant image according to the server response
 Adventures.setImage = function (img_name) {
@@ -112,9 +117,8 @@ Adventures.checkName = function(){
     }
 };
 
-
 Adventures.initAdventure = function(){
-
+    $("#loading-gif").show()
     $.ajax("/start",{
         type: "POST",
         data: {"user":
@@ -131,11 +135,31 @@ Adventures.initAdventure = function(){
             Adventures.playerCoins =data['coins']
             console.log(data);
             Adventures.write(data);
+            $("#loading-gif").hide();
             $(".adventure").show();
+            $(".restart-list").hide();
             $(".welcome-screen").hide();
         }
     });
 };
+
+Adventures.saveGame = function(){
+    $.ajax("/save",{
+        type: "POST",
+        data: {"user":
+            Adventures.currentUser,
+            "adventure": Adventures.currentAdventure,
+            "current": Adventures.currentStep,
+            "health": Adventures.playerHealth,
+            "coins": Adventures.playerCoins
+        },
+        dataType: "json",
+        contentType: "application/json",
+        success: function (data) {
+            alert(data['success'])
+        }
+    });
+}
 
 Adventures.handleServerError = function (errorThrown) {
     Adventures.debugPrint("Server Error: " + errorThrown);

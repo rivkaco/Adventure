@@ -71,8 +71,14 @@ def get_question(current_adv_id,current_story_id):
         return result
 
 
-print(get_options(1,1))
-#
-# def update_player_info(current_adv_id,current_story_id,player_id)
-#
-# def reset_adventure(current_adv_id,player_id)
+def save_game(user,adv_id,current_step,health,coins):
+    with connection.cursor() as cursor:
+        sql = "UPDATE adventures SET step={0}, health={1}, gold={2} WHERE adventure={3} AND user_id={4}".format(current_step,health,coins,adv_id,user)
+        cursor.execute(sql)
+        connection.commit()
+
+def reset_game(user,adv_id):
+    with connection.cursor() as cursor:
+        sql = "UPDATE adventures SET step=1, health=100, gold=10 WHERE adventure ={0} AND user_id={1}".format(adv_id,user)
+        cursor.execute(sql)
+        connection.commit()
