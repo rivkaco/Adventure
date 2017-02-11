@@ -50,14 +50,15 @@ def add_user_adventure(user_id,adventure_id):
 
 def get_step(user_id,adventure_id):
     with connection.cursor() as cursor:
-        sql = "SELECT step FROM adventures WHERE user_id={0} AND adventure ={1}".format(user_id,adventure_id)
+        sql = "SELECT step,health,gold FROM adventures WHERE user_id={0} AND adventure ={1}".format(user_id,adventure_id)
         cursor.execute(sql)
         result = cursor.fetchone()
-        return result['step']
+        return result
 
 def get_options (adventure_id, step_id):
     with connection.cursor() as cursor:
-        sql = "select next_question, option_text from options WHERE story_id = {0} AND q_id = {1}".format(adventure_id, step_id)
+        print(adventure_id,step_id)
+        sql = "SELECT next_question, option_text, health_effects, coin_effects FROM options WHERE story_id = {0} AND q_id = {1}".format(adventure_id, step_id)
         cursor.execute(sql)
         result = cursor.fetchall()
         return result
@@ -69,4 +70,9 @@ def get_question(current_adv_id,current_story_id):
         result = cursor.fetchone()
         return result
 
-print(get_options(1,2))
+
+print(get_options(1,1))
+#
+# def update_player_info(current_adv_id,current_story_id,player_id)
+#
+# def reset_adventure(current_adv_id,player_id)

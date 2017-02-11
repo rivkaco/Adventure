@@ -1,8 +1,10 @@
 var Adventures = {};
-Adventures.currentAdventure = 0; //todo keep track from db
-Adventures.currentStep = 0;//todo keep track from db
-Adventures.currentUser = 0;//todo keep track from db
-Adventures.nextStep = 0
+Adventures.currentAdventure //todo keep track from db
+Adventures.currentStep;//todo keep track from db
+Adventures.currentUser;//todo keep track from db
+Adventures.nextStep;
+Adventures.playerHealth;
+Adventures.playerCoins;
 
 
 //TODO: remove for production
@@ -25,14 +27,19 @@ Adventures.bindErrorHandlers = function () {
 };
 
 
-//The core function of the app, sends the user's choice and then parses the results to the server and handling the response
+//The core function of the app, sends the user's choice and then parses the results to the server and handling the response.
 Adventures.chooseOption = function(){
     Adventures.nextStep = $(this).val();
+    Adventures.playerHealth+=$(this).data('h-e')
+    Adventures.playerCoins+=$(this).data('c-e')
+
     $.ajax("/story",{
         type: "POST",
         data: {"user": Adventures.currentUser,
             "adventure": Adventures.currentAdventure,
-            "next": Adventures.nextStep},
+            "next": Adventures.nextStep,
+            "health":Adventures.playerHealth,
+            "coins":Adventures.playerCoins},
         dataType: "json",
         contentType: "application/json",
         success: function (data) {
@@ -44,18 +51,26 @@ Adventures.chooseOption = function(){
 };
 
 Adventures.write = function (message) {
+    //If statement, check user health-->if health <=0, go to death screen.
+
     //Writing new choices and image to screen
     $(".situation-text").text(message["text"]).show();
+    console.log(message['options'])
     for(var i=0;i<message['options'].length;i++){
         var opt = $("#option_" + (i+1));
         opt.text(message['options'][i]['option_text']);
-
-        // add value property= next step
-        opt.prop("value", message['options'][i]['id']);
+        opt.data('h-e',message['options'][i]['health_effects']);
+        opt.data('c-e',message['options'][i]['coin_effects'])
+        opt.prop("value", message['options'][i]['next_question']);
     }
     Adventures.setImage(message["image"]);
+    Adventures.updatePlayerStatsDisplay();
 };
 
+Adventures.updatePlayerStatsDisplay = function(){
+    $("#playerHealth").prop("value", Adventures.playerHealth)
+    $("#playerCoins").text(Adventures.playerCoins)
+};
 
 Adventures.start = function(){
     $(document).ready(function () {
@@ -96,6 +111,8 @@ Adventures.initAdventure = function(){
             Adventures.currentUser = data['user']
             Adventures.currentStep = data['current']
             Adventures.currentAdventure = data['adventure']
+            Adventures.playerHealth = data['health']
+            Adventures.playerCoins =data['coins']
             console.log(data);
             Adventures.write(data);
             $(".adventure").show();
