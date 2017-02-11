@@ -40,7 +40,6 @@ def story():
     next_steps_results = adventure.get_options(current_adv_id, next_story_id)
     question = adventure.get_question(current_adv_id, next_story_id)
     image = question['picture_name'] + '.jpg'
-    # adventure.update_player_db()
 
     return json.dumps({"user": user_id,
                        "adventure": current_adv_id,
@@ -59,13 +58,13 @@ def save():
     coins = request.POST.get("coins")
     adventure.save_game(user_id,current_adv_id,current_step,health,coins)
     return json.dumps({'success':'Game Saved'})
-
-@route("/reset", method="POST")
-def reset():
-    user_id = request.POST.get("user")
-    current_adv_id = request.POST.get("adventure")
-    adventure.reset_game(user_id,current_adv_id)
-    return
+# We still need to finish this.
+# @route("/reset", method="POST")
+# def reset():
+#     user_id = request.POST.get("user")
+#     current_adv_id = request.POST.get("adventure")
+#     adventure.reset_game(user_id,current_adv_id)
+#     return
 
 @route('/js/<filename:re:.*\.js$>', method='GET')
 def javascripts(filename):

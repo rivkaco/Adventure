@@ -137,6 +137,7 @@ Adventures.initAdventure = function(){
             Adventures.write(data);
             $("#loading-gif").hide();
             $(".adventure").show();
+            $(".adventure > .options-list").show();
             $(".restart-list").hide();
             $(".welcome-screen").hide();
         }
