@@ -52,10 +52,12 @@ Adventures.chooseOption = function(){
 
 Adventures.write = function (message) {
     //If statement, check user health-->if health <=0, go to death screen.
-
+    if (Adventures.playerHealth <= 0){
+        Adventures.playerDied()
+        return
+    }
     //Writing new choices and image to screen
     $(".situation-text").text(message["text"]).show();
-    console.log(message['options'])
     for(var i=0;i<message['options'].length;i++){
         var opt = $("#option_" + (i+1));
         opt.text(message['options'][i]['option_text']);
@@ -72,15 +74,29 @@ Adventures.updatePlayerStatsDisplay = function(){
     $("#playerCoins").text(Adventures.playerCoins)
 };
 
+
+Adventures.playerDied = function(){
+    $(".situation-text").text("You died because of your bad decisions!")
+    $(".adventure > .options-list").hide()
+    $(".restart-list").show()
+    Adventures.setImage('dead.jpg');
+    Adventures.updatePlayerStatsDisplay();
+}
+
 Adventures.start = function(){
     $(document).ready(function () {
-        $(".game-option").click(Adventures.chooseOption);
-        $("#nameField").keyup(Adventures.checkName);
-        $(".adventure-button").click(Adventures.initAdventure);
         $(".adventure").hide();
         $(".welcome-screen").show();
+        Adventures.bindEventHandlers();
     });
 };
+
+Adventures.bindEventHandlers = function(){
+    $("#new-game").off('click').on('click',Adventures.start)
+    $("#nameField").unbind().keyup(Adventures.checkName);
+    $(".game-option").off('click').on('click',Adventures.chooseOption);
+    $(".adventure-button").off('click').on('click',Adventures.initAdventure);
+}
 
 //Setting the relevant image according to the server response
 Adventures.setImage = function (img_name) {
