@@ -65,9 +65,14 @@ def reset():
         user_id = request.POST.get("user")
         current_adv_id = request.POST.get("adventure")
         adventure.reset_game(user_id, current_adv_id)
-        return ({'msg':'Reset successful.'})
+        return json.dumps({'msg':'Reset successful.'})
     except:
-        return ({'msg':'Something is wrong!!!!'})
+        return json.dumps({'msg':'Something is wrong!!!!'})
+
+@route("/getStories", method="GET")
+def get_stories():
+    stories = adventure.get_stories_list()
+    return json.dumps({"stories":stories})
 
 @route('/js/<filename:re:.*\.js$>', method='GET')
 def javascripts(filename):
