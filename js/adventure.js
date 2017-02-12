@@ -91,6 +91,7 @@ Adventures.start = function(){
         $("#loading-gif").hide();
         $(".adventure").hide();
         $(".welcome-screen").show();
+        Adventures.getStories();
         Adventures.bindEventHandlers();
 
     });
@@ -99,6 +100,17 @@ Adventures.start = function(){
 Adventures.restart = function(){
     Adventures.resetGame();
     Adventures.initAdventure();
+}
+
+Adventures.generateAdventureButtons = function(data){
+    for (i=0; i < data.length;i++){
+        var story = $("<button/>").addClass("btn btn-default btn-lg btn-block adventure-button").id(data[i]['id'])
+        story.addClass("btn btn-default btn-lg btn-block adventure-button")
+        story.id(data[i]['id'])
+        story.prop('value',data[i]['id'])
+        story.text(data[i]['story_name'])
+        $("#stories").append(story)
+    };
 }
 
 
@@ -189,6 +201,15 @@ Adventures.resetGame = function(){
     })
 }
 
+Adventures.getStories = function(){
+    $.ajax("/getStories", {
+        type:"GET",
+        dataType: "json",
+        success: function(data){
+            Adventures.generateAdventureButtons(data);
+        }
+    })
+}
 
 
 Adventures.handleServerError = function (errorThrown) {
