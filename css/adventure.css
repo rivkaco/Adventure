@@ -30,7 +30,36 @@ display: inline-block;
 .hidden{
    visibility:hidden;
 }
+.game-option {
+  position: relative;
+  vertical-align: top;
+  width: 300px;
+  height: 60px;
+  padding: 0;
+  margin-left: 340px;
+  font-size: 22px;
+  color: white;
+  text-align: center;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+  background: #2A2D34;
+  border: 0;
+  border-bottom: 2px solid #2A2D34;
+  cursor: pointer;
+  -webkit-box-shadow: inset 0 -2px #5C946E;
+  box-shadow: inset 0 -2px #5C946E4;
+}
+.game-option:active {
+  top: 1px;
+  outline: none;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+.game-option:hover{
+    background-color: #399E5A;
+    color: #2A2D34;
+    border: 1px solid #2A2D34;
 
+}
 .shadowed{
  -webkit-box-shadow: 3px 3px 23px 0px rgba(50, 50, 50, 0.75);
 	-moz-box-shadow:    3px 3px 23px 0px rgba(50, 50, 50, 0.75);
@@ -47,7 +76,7 @@ text-align:center;
     transform: translateY(-50%) translateX(-50%);
     left: 50%;
     position: absolute !important;
-    background-color:#FFD6A8;
+    background-color:#399E5A;
 }
 .situation-text{
     display:block;
