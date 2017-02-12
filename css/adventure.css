@@ -9,6 +9,16 @@ body{
 	cursor:pointer;
 }
 
+.my-pic {
+    display: block;
+    margin: auto;
+    width: 40%;
+ }
+
+.status-player {
+text-align: center;
+}
+
 .hidden{
    visibility:hidden;
 }

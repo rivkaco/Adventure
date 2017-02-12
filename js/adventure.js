@@ -57,6 +57,15 @@ Adventures.write = function (message) {
         Adventures.resetPlayerAdventure();
         return
     }
+
+    if (Adventures.nextStep >= 990) {
+        Adventures.victory()
+        Adventures.resetPlayerAdventure();
+        return
+    }
+
+    // if q_id is higher than... then send to victory, ie. do above
+
     //Writing new choices and image to screen
     $(".situation-text").text(message["text"]).show();
     for(var i=0;i<message['options'].length;i++){
@@ -80,11 +89,23 @@ Adventures.updatePlayerStatsDisplay = function(){
 Adventures.playerDied = function(){
     Adventures.resetGame();
     $(".situation-text").text("You died because of your bad decisions!")
+    //  to not hide all options of adventures
     $(".adventure > .options-list").hide()
     $(".restart-list").show()
     Adventures.setImage('dead.jpg');
     Adventures.updatePlayerStatsDisplay();
-}
+};
+
+Adventures.victory = function() {
+Adventures.resetGame();
+    $(".situation-text").text("YOU SURVIVED! WELL DONE!")
+    //  to not hide all options of adventures
+    $(".adventure > .options-list").hide()
+    $(".restart-list").show()
+    Adventures.setImage('victory.jpg');
+    Adventures.updatePlayerStatsDisplay();
+};
+
 
 Adventures.start = function(){
     $(document).ready(function () {
