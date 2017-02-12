@@ -79,6 +79,7 @@ def save_game(user,adv_id,current_step,health,coins):
 
 def reset_game(user,adv_id):
     with connection.cursor() as cursor:
+        print(user,adv_id)
         sql = "UPDATE adventures SET step=1, health=100, gold=10 WHERE adventure ={0} AND user_id={1}".format(adv_id,user)
         cursor.execute(sql)
         connection.commit()

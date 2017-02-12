@@ -1,7 +1,6 @@
 from bottle import route, run, template, static_file, request
-import random
 import json
-# This is importing our file with our MySQL queries/modifications.
+# This is importing our file with our MySQL queries/alterations.
 import adventure_mysql as adventure
 
 
@@ -58,13 +57,17 @@ def save():
     coins = request.POST.get("coins")
     adventure.save_game(user_id,current_adv_id,current_step,health,coins)
     return json.dumps({'success':'Game Saved'})
-# We still need to finish this.
-# @route("/reset", method="POST")
-# def reset():
-#     user_id = request.POST.get("user")
-#     current_adv_id = request.POST.get("adventure")
-#     adventure.reset_game(user_id,current_adv_id)
-#     return
+
+
+@route("/reset", method="POST")
+def reset():
+    try:
+        user_id = request.POST.get("user")
+        current_adv_id = request.POST.get("adventure")
+        adventure.reset_game(user_id, current_adv_id)
+        return ({'msg':'Reset successful.'})
+    except:
+        return ({'msg':'Something is wrong!!!!'})
 
 @route('/js/<filename:re:.*\.js$>', method='GET')
 def javascripts(filename):
