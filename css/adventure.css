@@ -17,6 +17,14 @@ body{
 
 .status-player {
 text-align: center;
+vertical-align: middle;
+}
+
+.health {
+display: inline-block;
+}
+.coins {
+display: inline-block;
 }
 
 .hidden{
