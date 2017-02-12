@@ -47,13 +47,13 @@ Adventures.write = function (message) {
     //If statement, check user health-->if health <=0, go to death screen.
     if (Adventures.playerHealth <= 0){
         Adventures.playerDied()
-        Adventures.resetPlayerAdventure();
+        Adventures.resetGame();
         return
     }
 
     if (Adventures.nextStep >= 990) {
         Adventures.victory()
-        Adventures.resetPlayerAdventure();
+        Adventures.resetGame();
         return
     }
 
@@ -102,6 +102,8 @@ Adventures.victory = function() {
 
 Adventures.start = function(){
     $(document).ready(function () {
+        Adventures.currentAdventure=undefined;
+        Adventures.currentUser=undefined;
         Adventures.getStories();
         $("#loading-gif").hide();
         $(".adventure").hide();

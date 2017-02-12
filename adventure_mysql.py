@@ -37,7 +37,7 @@ def fetch_user_id(username):
 
 def load_story(user_id, adventure_id):
     with connection.cursor() as cursor:
-        sql = "SELECT user_id FROM adventures WHERE user_id={}".format(user_id)
+        sql = "SELECT user_id FROM adventures WHERE user_id={0} AND adventure={1}".format(user_id,adventure_id)
         cursor.execute(sql)
         result = cursor.fetchone()
         if result is None:
@@ -55,7 +55,7 @@ def add_user_adventure(user_id, adventure_id):
 def get_step(user_id, adventure_id):
     with connection.cursor() as cursor:
         sql = "SELECT step,health,gold FROM adventures WHERE user_id={0} AND adventure ={1}".format(user_id,
-                                                                                                    adventure_id)
+                                                                                                  adventure_id)
         cursor.execute(sql)
         result = cursor.fetchone()
         return result
@@ -103,3 +103,4 @@ def get_stories_list():
         result = cursor.fetchall()
         return result
 
+add_user_adventure(1,2)
