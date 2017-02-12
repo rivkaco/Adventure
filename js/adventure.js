@@ -88,10 +88,10 @@ Adventures.playerDied = function(){
 
 Adventures.start = function(){
     $(document).ready(function () {
+        Adventures.getStories();
         $("#loading-gif").hide();
         $(".adventure").hide();
         $(".welcome-screen").show();
-        Adventures.getStories();
         Adventures.bindEventHandlers();
 
     });
@@ -103,12 +103,14 @@ Adventures.restart = function(){
 }
 
 Adventures.generateAdventureButtons = function(data){
-    for (i=0; i < data.length;i++){
-        var story = $("<button/>").addClass("btn btn-default btn-lg btn-block adventure-button").id(data[i]['id'])
+    for (i=0; i < data.length; i++){
+        var story = $("<button/>").addClass("btn btn-default btn-lg btn-block adventure-button")
         story.addClass("btn btn-default btn-lg btn-block adventure-button")
-        story.id(data[i]['id'])
-        story.prop('value',data[i]['id'])
+        story.attr('id',data[i]['id'])
+        story.prop('value',parseInt(data[i]['id']))
+        story.prop('disabled',true)
         story.text(data[i]['story_name'])
+        story.off('click').on('click',Adventures.initAdventure);
         $("#stories").append(story)
     };
 }
@@ -119,7 +121,7 @@ Adventures.bindEventHandlers = function(){
     $(".restart").off('click').on('click',Adventures.restartGame),
     $("#nameField").unbind().keyup(Adventures.checkName);
     $(".game-option").off('click').on('click',Adventures.chooseOption);
-    $(".adventure-button").off('click').on('click',Adventures.initAdventure);
+//    $(".adventure-button").off('click').on('click',Adventures.initAdventure);
     $(".save-game").off('click').on('click',Adventures.saveGame);
     $(".restart").off('click').on('click',Adventures.restart);
 }
@@ -142,16 +144,21 @@ Adventures.checkName = function(){
 Adventures.initAdventure = function(){
     if (!Adventures.currentAdventure){
     Adventures.currentAdventure = $(this).val()}
+    if(!Adventures.currentUser){
+    Adventures.currentUser = $("#nameField").val()
+    }
+
     $("#loading-gif").show()
     $.ajax("/start",{
         type: "POST",
-        data: {"user":
-            $("#nameField").val(),
+        data: {"user": Adventures.currentUser
+            ,
             "adventure_id": Adventures.currentAdventure //This might mess things up, was originally $(this).val(). Changed it to this so it would work with the restartgame function.
         },
         dataType: "json",
         contentType: "application/json",
         success: function (data) {
+            $("#nameField").val('')
             Adventures.currentUser = data['user']
             Adventures.currentStep = data['current']
             Adventures.currentAdventure = data['adventure']
@@ -206,7 +213,8 @@ Adventures.getStories = function(){
         type:"GET",
         dataType: "json",
         success: function(data){
-            Adventures.generateAdventureButtons(data);
+            $('.adventure-button').remove()
+            Adventures.generateAdventureButtons(data["stories"]);
         }
     })
 }
