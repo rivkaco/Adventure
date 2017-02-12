@@ -50,14 +50,15 @@ def add_user_adventure(user_id,adventure_id):
 
 def get_step(user_id,adventure_id):
     with connection.cursor() as cursor:
-        sql = "SELECT step FROM adventures WHERE user_id={0} AND adventure ={1}".format(user_id,adventure_id)
+        sql = "SELECT step,health,gold FROM adventures WHERE user_id={0} AND adventure ={1}".format(user_id,adventure_id)
         cursor.execute(sql)
         result = cursor.fetchone()
-        return result['step']
+        return result
 
 def get_options (adventure_id, step_id):
     with connection.cursor() as cursor:
-        sql = "select next_question, option_text from options WHERE story_id = {0} AND q_id = {1}".format(adventure_id, step_id)
+        print(adventure_id,step_id)
+        sql = "SELECT next_question, option_text, health_effects, coin_effects FROM options WHERE story_id = {0} AND q_id = {1}".format(adventure_id, step_id)
         cursor.execute(sql)
         result = cursor.fetchall()
         return result
@@ -69,4 +70,16 @@ def get_question(current_adv_id,current_story_id):
         result = cursor.fetchone()
         return result
 
-print(get_options(1,2))
+
+def save_game(user,adv_id,current_step,health,coins):
+    with connection.cursor() as cursor:
+        sql = "UPDATE adventures SET step={0}, health={1}, gold={2} WHERE adventure={3} AND user_id={4}".format(current_step,health,coins,adv_id,user)
+        cursor.execute(sql)
+        connection.commit()
+
+def reset_game(user,adv_id):
+    with connection.cursor() as cursor:
+        print(user,adv_id)
+        sql = "UPDATE adventures SET step=1, health=100, gold=10 WHERE adventure ={0} AND user_id={1}".format(adv_id,user)
+        cursor.execute(sql)
+        connection.commit()

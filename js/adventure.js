@@ -1,8 +1,10 @@
 var Adventures = {};
-Adventures.currentAdventure = 0; //todo keep track from db
-Adventures.currentStep = 0;//todo keep track from db
-Adventures.currentUser = 0;//todo keep track from db
-Adventures.nextStep = 0
+Adventures.currentAdventure;
+Adventures.currentStep;
+Adventures.currentUser;
+Adventures.nextStep;
+Adventures.playerHealth;
+Adventures.playerCoins;
 
 
 //TODO: remove for production
@@ -25,18 +27,23 @@ Adventures.bindErrorHandlers = function () {
 };
 
 
-//The core function of the app, sends the user's choice and then parses the results to the server and handling the response
+//The core function of the app, sends the user's choice and then parses the results to the server and handling the response.
 Adventures.chooseOption = function(){
     Adventures.nextStep = $(this).val();
+    Adventures.currentStep=$(this).val();
+    Adventures.playerHealth+=$(this).data('h-e')
+    Adventures.playerCoins+=$(this).data('c-e')
+
     $.ajax("/story",{
         type: "POST",
         data: {"user": Adventures.currentUser,
             "adventure": Adventures.currentAdventure,
-            "next": Adventures.nextStep},
+            "next": Adventures.nextStep,
+            "health":Adventures.playerHealth,
+            "coins":Adventures.playerCoins},
         dataType: "json",
         contentType: "application/json",
         success: function (data) {
-            Adventures.currentStep = data['current']
             $(".greeting-text").hide();
             Adventures.write(data);
         }
@@ -44,28 +51,67 @@ Adventures.chooseOption = function(){
 };
 
 Adventures.write = function (message) {
+    //If statement, check user health-->if health <=0, go to death screen.
+    if (Adventures.playerHealth <= 0){
+        Adventures.playerDied()
+        Adventures.resetPlayerAdventure();
+        return
+    }
     //Writing new choices and image to screen
     $(".situation-text").text(message["text"]).show();
     for(var i=0;i<message['options'].length;i++){
         var opt = $("#option_" + (i+1));
         opt.text(message['options'][i]['option_text']);
-
-        // add value property= next step
+        opt.data('h-e',message['options'][i]['health_effects']);
+        opt.data('c-e',message['options'][i]['coin_effects'])
         opt.prop("value", message['options'][i]['next_question']);
     }
+    $('.restart').prop("value",Adventures.currentAdventure)
     Adventures.setImage(message["image"]);
+    Adventures.updatePlayerStatsDisplay();
 };
 
+Adventures.updatePlayerStatsDisplay = function(){
+    $("#playerHealth").prop("value", Adventures.playerHealth)
+    $("#playerCoins").text(Adventures.playerCoins)
+};
+
+
+Adventures.playerDied = function(){
+    Adventures.resetGame();
+    $(".situation-text").text("You died because of your bad decisions!")
+    $(".adventure > .options-list").hide()
+    $(".restart-list").show()
+    Adventures.setImage('dead.jpg');
+    Adventures.updatePlayerStatsDisplay();
+}
 
 Adventures.start = function(){
     $(document).ready(function () {
-        $(".game-option").click(Adventures.chooseOption);
-        $("#nameField").keyup(Adventures.checkName);
-        $(".adventure-button").click(Adventures.initAdventure);
+        $("#loading-gif").hide();
         $(".adventure").hide();
         $(".welcome-screen").show();
+        Adventures.bindEventHandlers();
+
     });
 };
+
+Adventures.restart = function(){
+    Adventures.resetGame();
+    Adventures.initAdventure();
+}
+
+
+Adventures.bindEventHandlers = function(){
+    $(".new-game").off('click').on('click',Adventures.start)
+    $(".restart").off('click').on('click',Adventures.restartGame),
+    $("#nameField").unbind().keyup(Adventures.checkName);
+    $(".game-option").off('click').on('click',Adventures.chooseOption);
+    $(".adventure-button").off('click').on('click',Adventures.initAdventure);
+    $(".save-game").off('click').on('click',Adventures.saveGame);
+    $(".restart").off('click').on('click',Adventures.restart);
+}
+
 
 //Setting the relevant image according to the server response
 Adventures.setImage = function (img_name) {
@@ -81,14 +127,15 @@ Adventures.checkName = function(){
     }
 };
 
-
 Adventures.initAdventure = function(){
-
+    if (!Adventures.currentAdventure){
+    Adventures.currentAdventure = $(this).val()}
+    $("#loading-gif").show()
     $.ajax("/start",{
         type: "POST",
         data: {"user":
             $("#nameField").val(),
-            "adventure_id": $(this).val()
+            "adventure_id": Adventures.currentAdventure //This might mess things up, was originally $(this).val(). Changed it to this so it would work with the restartgame function.
         },
         dataType: "json",
         contentType: "application/json",
@@ -96,13 +143,53 @@ Adventures.initAdventure = function(){
             Adventures.currentUser = data['user']
             Adventures.currentStep = data['current']
             Adventures.currentAdventure = data['adventure']
+            Adventures.playerHealth = data['health']
+            Adventures.playerCoins =data['coins']
             console.log(data);
             Adventures.write(data);
+            $("#loading-gif").hide();
             $(".adventure").show();
+            $(".adventure > .options-list").show();
+            $(".restart-list").hide();
             $(".welcome-screen").hide();
         }
     });
 };
+
+Adventures.saveGame = function(){
+    $.ajax("/save",{
+        type: "POST",
+        data: {"user":
+            Adventures.currentUser,
+            "adventure": Adventures.currentAdventure,
+            "current": Adventures.currentStep,
+            "health": Adventures.playerHealth,
+            "coins": Adventures.playerCoins
+        },
+        dataType: "json",
+        contentType: "application/json",
+        success: function (data) {
+            alert(data['success'])
+        }
+    });
+}
+
+Adventures.resetGame = function(){
+    $.ajax("/reset", {
+        type: "POST",
+        data: {"user":
+            Adventures.currentUser,
+            "adventure": Adventures.currentAdventure
+        },
+        dataType: "json",
+        contentType: "application/json",
+        success: function(data){
+            console.log(data['success'])
+        }
+    })
+}
+
+
 
 Adventures.handleServerError = function (errorThrown) {
     Adventures.debugPrint("Server Error: " + errorThrown);
