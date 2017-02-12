@@ -6,12 +6,6 @@ Adventures.nextStep;
 Adventures.playerHealth;
 Adventures.playerCoins;
 
-
-//TODO: remove for production
-Adventures.debugMode = true;
-Adventures.DEFAULT_IMG = "./images/choice.jpg";
-
-
 //Handle Ajax Error, animation error and speech support
 Adventures.bindErrorHandlers = function () {
     //Handle ajax error, if the server is not found or experienced an error
@@ -25,7 +19,6 @@ Adventures.bindErrorHandlers = function () {
         Adventures.setImage(Adventures.DEFAULT_IMG);
     });
 };
-
 
 //The core function of the app, sends the user's choice and then parses the results to the server and handling the response.
 Adventures.chooseOption = function(){
@@ -89,20 +82,20 @@ Adventures.updatePlayerStatsDisplay = function(){
 Adventures.playerDied = function(){
     Adventures.resetGame();
     $(".situation-text").text("You died because of your bad decisions!")
+    Adventures.setImage('dead.jpg');
     //  to not hide all options of adventures
     $(".adventure > .options-list").hide()
     $(".restart-list").show()
-    Adventures.setImage('dead.jpg');
     Adventures.updatePlayerStatsDisplay();
 };
 
 Adventures.victory = function() {
-Adventures.resetGame();
+    Adventures.resetGame();
     $(".situation-text").text("YOU SURVIVED! WELL DONE!")
+    Adventures.setImage('victory.jpg');
     //  to not hide all options of adventures
     $(".adventure > .options-list").hide()
     $(".restart-list").show()
-    Adventures.setImage('victory.jpg');
     Adventures.updatePlayerStatsDisplay();
 };
 
@@ -142,7 +135,6 @@ Adventures.bindEventHandlers = function(){
     $(".restart").off('click').on('click',Adventures.restartGame),
     $("#nameField").unbind().keyup(Adventures.checkName);
     $(".game-option").off('click').on('click',Adventures.chooseOption);
-//    $(".adventure-button").off('click').on('click',Adventures.initAdventure);
     $(".save-game").off('click').on('click',Adventures.saveGame);
     $(".restart").off('click').on('click',Adventures.restart);
 }
@@ -168,13 +160,12 @@ Adventures.initAdventure = function(){
     if(!Adventures.currentUser){
     Adventures.currentUser = $("#nameField").val()
     }
-
     $("#loading-gif").show()
     $.ajax("/start",{
         type: "POST",
         data: {"user": Adventures.currentUser
             ,
-            "adventure_id": Adventures.currentAdventure //This might mess things up, was originally $(this).val(). Changed it to this so it would work with the restartgame function.
+            "adventure_id": Adventures.currentAdventure
         },
         dataType: "json",
         contentType: "application/json",
