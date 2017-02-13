@@ -57,8 +57,6 @@ Adventures.write = function (message) {
         return
     }
 
-    // if q_id is higher than... then send to victory, ie. do above
-
     //Writing new choices and image to screen
     $(".situation-text").text(message["text"]).show();
     for(var i=0;i<message['options'].length;i++){
